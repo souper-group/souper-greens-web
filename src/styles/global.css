@@ -1,0 +1,494 @@
+/*
+ * Souper Greens — soupergreens.com landing page
+ * Tokens sourced from the Souper Greens Design System (colors_and_type.css).
+ * Manrope is loaded via <link> in index.html rather than a CSS @import.
+ */
+
+:root {
+  /* ——— Brand primary ——— */
+  --sg-green:       #006847;   /* Primary Color 04 — hero color */
+  --sg-orange:      #FF8B2E;   /* Primary Color 02 — swoosh & accent */
+  --sg-black:       #000000;   /* Primary Color 03 */
+  --sg-paper:       #FAFBFF;   /* Primary Color 01 — off-white page base. Background only on light */
+
+  /* ——— Greens extended ——— */
+  --sg-green-dark:  #004A33;
+  --sg-green-soft:  rgba(0,104,71,0.08);
+
+  /* ——— Orange extended ——— */
+  --sg-orange-dark: #E97A1E;
+  --sg-orange-soft: rgba(255,139,46,0.12);
+
+  /* ——— Grayscale ladder ——— */
+  --sg-cloud:    #EDEFF7;
+  --sg-smoke:    #D3D6E0;
+  --sg-steel:    #BCBFCC;
+  --sg-space:    #9DA2B3;
+  --sg-graphite: #6E7180;
+  --sg-arsenic:  #40424D;
+  --sg-phantom:  #1E1E24;
+
+  /* ——— Status ——— */
+  --sg-danger:       #C0392B;
+  --sg-danger-soft:  rgba(192,57,43,0.10);
+  --sg-success:      var(--sg-green);
+  --sg-success-soft: var(--sg-green-soft);
+
+  /* ——— Semantic tokens ——— */
+  --sg-bg:           var(--sg-paper);
+  --sg-surface:      #FFFFFF;
+  --sg-surface-alt:  var(--sg-cloud);
+  --sg-fg:           var(--sg-phantom);
+  --sg-fg-muted:     var(--sg-graphite);
+  --sg-fg-subtle:    var(--sg-space);
+  --sg-fg-invert:    var(--sg-paper);
+  --sg-border:       var(--sg-smoke);
+  --sg-border-strong:var(--sg-steel);
+  --sg-accent:       var(--sg-orange);
+  --sg-accent-fg:    var(--sg-paper);
+  --sg-brand:        var(--sg-green);
+  --sg-brand-fg:     var(--sg-paper);
+
+  /* ——— Type ——— */
+  --sg-font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --sg-fs-display:  clamp(3.5rem, 6vw + 1rem, 6rem);
+  --sg-fs-h1:       clamp(2.5rem, 3vw + 1rem, 3.75rem);
+  --sg-fs-h2:       clamp(1.875rem, 1.5vw + 1rem, 2.5rem);
+  --sg-fs-h3:       1.5rem;
+  --sg-fs-h4:       1.25rem;
+  --sg-fs-lead:     1.125rem;
+  --sg-fs-body:     1rem;
+  --sg-fs-sm:       0.875rem;
+  --sg-fs-xs:       0.75rem;
+  --sg-fs-eyebrow:  0.75rem;
+
+  --sg-lh-tight:   1.05;
+  --sg-lh-snug:    1.2;
+  --sg-lh-normal:  1.5;
+  --sg-lh-loose:   1.65;
+
+  --sg-tracking-tight:  -0.02em;
+  --sg-tracking-normal: 0;
+  --sg-tracking-wide:   0.08em;
+
+  /* ——— Spacing ladder ——— */
+  --sg-sp-1:   4px;
+  --sg-sp-2:   8px;
+  --sg-sp-3:   12px;
+  --sg-sp-4:   16px;
+  --sg-sp-5:   24px;
+  --sg-sp-6:   32px;
+  --sg-sp-7:   48px;
+  --sg-sp-8:   64px;
+  --sg-sp-9:   96px;
+  --sg-sp-10:  128px;
+
+  /* ——— Radii ——— */
+  --sg-radius-xs:  6px;
+  --sg-radius-sm:  10px;
+  --sg-radius-md:  16px;
+  --sg-radius-lg:  20px;
+  --sg-radius-xl:  28px;
+  --sg-radius-pill: 999px;
+
+  /* ——— Shadows ——— */
+  --sg-shadow-sm:  0 1px 2px rgba(30,30,36,0.06);
+  --sg-shadow-md:  0 4px 12px rgba(30,30,36,0.08);
+  --sg-shadow-lg:  0 12px 32px rgba(30,30,36,0.10);
+
+  /* ——— Motion ——— */
+  --sg-ease:       cubic-bezier(0.2, 0.8, 0.2, 1);
+  --sg-dur-fast:   120ms;
+  --sg-dur-normal: 220ms;
+  --sg-dur-slow:   420ms;
+}
+
+/* ——— Base ——— */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Keep the hidden attribute authoritative even for elements we give a display value */
+[hidden] { display: none !important; }
+
+/* Sticky footer: the page is at least a full viewport tall and the hero
+ * absorbs any leftover space, so the footer sits on the bottom edge. When
+ * the content outgrows the viewport there is no free space to absorb and
+ * the footer simply flows after it. */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--sg-font-sans);
+  font-size: var(--sg-fs-body);
+  line-height: var(--sg-lh-normal);
+  color: var(--sg-fg);
+  background: var(--sg-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--sg-font-sans);
+  font-weight: 700;
+  line-height: var(--sg-lh-snug);
+  letter-spacing: var(--sg-tracking-tight);
+  color: var(--sg-fg);
+  margin: 0;
+  text-wrap: balance;
+}
+p { margin: 0; text-wrap: pretty; }
+img { max-width: 100%; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Eyebrows: the template uses orange, but at 12px that fails WCAG AA on both
+ * paper (2.26:1) and green (2.93:1); green-on-light and paper-on-green pass
+ * comfortably while staying on-palette. See README "Accessibility notes". */
+.eyebrow {
+  font-size: var(--sg-fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sg-green);
+  margin-bottom: var(--sg-sp-4);
+}
+.hero .eyebrow { color: var(--sg-paper); }
+
+/* ——— Buttons (from marketing-page template) ——— */
+.btn {
+  font-family: var(--sg-font-sans);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px 26px;
+  border-radius: var(--sg-radius-pill);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: background var(--sg-dur-normal) var(--sg-ease);
+}
+.btn.primary { background: var(--sg-orange); color: var(--sg-paper); }
+.btn.primary:hover { background: var(--sg-orange-dark); }
+.btn.primary:disabled { background: var(--sg-steel); cursor: default; }
+/* Focus rings: green on light surfaces, paper on the green hero — both pass
+ * the 3:1 non-text contrast requirement (orange passes neither). */
+.btn:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 2px; }
+.hero .btn:focus-visible { outline-color: var(--sg-paper); }
+
+/* ——— Hero ——— */
+.hero {
+  background: var(--sg-green);
+  color: var(--sg-paper);
+  padding: var(--sg-sp-9) var(--sg-sp-6) var(--sg-sp-9);
+  text-align: center;
+  /* Grows into spare vertical space only when there is some to take */
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-inner { max-width: 860px; margin: 0 auto; width: 100%; }
+/* Width capped so the logo keeps its documented clearspace (≥ cap-height of
+ * the "G") on all sides, including small phones. */
+.hero-logo { width: min(400px, 72vw); height: auto; margin: 0 auto var(--sg-sp-8); display: block; }
+.hero h1 {
+  font-size: clamp(2.5rem, 4.5vw + 0.5rem, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--sg-paper);
+  margin: 0 auto var(--sg-sp-5);
+  max-width: 16ch;
+}
+/* Rotating headline word. An invisible sizer holds the box at the width of
+ * "fork." so the line stays optically centred on a mid-length word; the words
+ * themselves are taken out of flow and pinned to its left edge, so short ones
+ * leave a small gap and long ones simply run past. Nothing reflows. */
+.word-rotator { position: relative; display: inline-block; vertical-align: top; }
+.word-sizer { visibility: hidden; }
+.word-rotator > .word {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  color: var(--sg-orange);
+  opacity: 0;
+  transform: translateY(0.35em);
+  transition: opacity 150ms var(--sg-ease), transform 150ms var(--sg-ease);
+}
+/* Staggered handoff: the outgoing word clears before the next fades in, so
+ * two words are never stacked at half opacity on the same spot. */
+.word-rotator > .word.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 150ms;
+}
+.word-rotator > .word.is-leaving {
+  opacity: 0;
+  transform: translateY(-0.35em);
+  transition-delay: 0ms;
+}
+.word-rotator > .word.is-plain { color: var(--sg-paper); }
+.hero .lead {
+  font-size: 19px;
+  line-height: 1.55;
+  color: rgba(250, 251, 255, 0.85);
+  max-width: 560px;
+  margin: 0 auto var(--sg-sp-5);
+}
+.hero-address { margin: 0 auto var(--sg-sp-7); }
+.hero-address a {
+  font-size: var(--sg-fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--sg-paper);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(250, 251, 255, 0.45);
+  transition: text-decoration-color var(--sg-dur-fast) var(--sg-ease);
+}
+.hero-address a:hover { text-decoration-color: var(--sg-paper); }
+.hero-address a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
+
+/* ——— Signup form (hero + newsletter band pattern) ——— */
+.signup { max-width: 560px; margin: 0 auto; }
+.signup-heading { display: block; font-size: var(--sg-fs-h4); font-weight: 700; color: var(--sg-paper); margin-bottom: var(--sg-sp-2); }
+/* Sits above the fields: the space below them grows when the consent row
+ * appears, so anchoring the explanation up here keeps it steady. */
+.signup-sub {
+  font-size: var(--sg-fs-sm);
+  line-height: 1.55;
+  color: rgba(250, 251, 255, 0.85);
+  max-width: 420px;
+  margin: 0 auto var(--sg-sp-5);
+}
+
+/* Wrapper swapped between the form and the success state. JS pins its
+ * min-height to the form's rendered height first, so nothing shifts. */
+.signup-body { position: relative; max-width: 380px; margin: 0 auto; }
+/* One column: email, phone, consent, then a full-width button that visibly
+ * belongs to every field above it rather than to the email alone. The gap
+ * clears the 3px focus ring plus its 2px offset on both neighbours. */
+.signup form { display: flex; flex-direction: column; gap: var(--sg-sp-4); }
+
+.signup input[type="email"],
+.signup input[type="tel"] {
+  font-family: var(--sg-font-sans);
+  font-size: 15px;
+  padding: 13px 20px;
+  width: 100%;
+  border-radius: var(--sg-radius-pill);
+  border: none;
+  background: var(--sg-paper);
+  color: var(--sg-phantom);
+  outline: none;
+}
+/* A little extra air above the action than between the fields themselves */
+.signup .btn.primary { width: 100%; margin-top: var(--sg-sp-2); }
+.signup input::placeholder { color: var(--sg-graphite); }
+.signup input:focus-visible {
+  outline: 3px solid var(--sg-paper);
+  outline-offset: 2px;
+}
+/* Error state reads without relying on color alone — the message below the
+ * form carries a ⚠ glyph, and the ring here is a secondary cue. */
+.signup input[aria-invalid="true"] {
+  outline: 3px solid var(--sg-orange);
+  outline-offset: 2px;
+}
+
+/* Honeypot — visually gone, still in the form for bots */
+.signup .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* SMS consent — revealed only once a number is typed */
+.consent { width: 100%; padding: 0 var(--sg-sp-2); }
+.consent-label {
+  display: flex;
+  gap: var(--sg-sp-3);
+  align-items: center; /* centred against the whole consent paragraph */
+  text-align: left;
+  font-size: var(--sg-fs-xs);
+  line-height: 1.5;
+  color: rgba(250, 251, 255, 0.85);
+  cursor: pointer;
+}
+.consent-label input[type="checkbox"] {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--sg-orange);
+  cursor: pointer;
+}
+.consent-label input[type="checkbox"]:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 2px; }
+
+.signup .form-msg { margin-top: var(--sg-sp-4); font-size: 15px; font-weight: 700; min-height: 1.5em; color: var(--sg-paper); outline: none; }
+
+/* ——— Success state ——— */
+.signup-success {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.signup-success .plane {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  color: var(--sg-paper);
+  animation: sg-plane-send 900ms var(--sg-ease) forwards;
+}
+.signup-success .success-text {
+  font-size: var(--sg-fs-h4);
+  font-weight: 700;
+  color: var(--sg-paper);
+  outline: none;
+  opacity: 0;
+  animation: sg-success-in 420ms var(--sg-ease) 380ms forwards;
+}
+@keyframes sg-plane-send {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  25%  { transform: translate(-6px, 4px) rotate(-8deg) scale(0.96); opacity: 1; }
+  100% { transform: translate(120px, -80px) rotate(12deg) scale(0.5); opacity: 0; }
+}
+@keyframes sg-success-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ——— Sections ——— */
+.section { padding: var(--sg-sp-9) var(--sg-sp-6); max-width: 1100px; margin: 0 auto; }
+.section-head { text-align: center; margin-bottom: var(--sg-sp-7); }
+.section-head h2 {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 var(--sg-sp-4);
+}
+.section-head p {
+  font-size: 17px;
+  color: var(--sg-fg-muted);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ——— Carousel ——— */
+.carousel { position: relative; max-width: 860px; margin: 0 auto; }
+.carousel-viewport {
+  overflow: hidden;
+  border-radius: var(--sg-radius-xl);
+  box-shadow: var(--sg-shadow-lg);
+  background: var(--sg-cloud);
+}
+.carousel-track {
+  display: flex;
+  transition: transform var(--sg-dur-slow) var(--sg-ease);
+}
+.carousel-slide { flex: 0 0 100%; margin: 0; }
+.carousel-slide img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.carousel-slide figcaption {
+  font-size: var(--sg-fs-sm);
+  color: var(--sg-fg-muted);
+  text-align: center;
+  padding: var(--sg-sp-3) var(--sg-sp-4);
+  background: var(--sg-surface);
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--sg-radius-pill);
+  border: none;
+  cursor: pointer;
+  background: rgba(250, 251, 255, 0.92);
+  color: var(--sg-green);
+  font-size: 20px;
+  line-height: 1;
+  box-shadow: var(--sg-shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--sg-dur-fast) var(--sg-ease);
+}
+.carousel-btn:hover { background: var(--sg-paper); }
+.carousel-btn:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 2px; }
+.carousel-btn.prev { left: var(--sg-sp-4); }
+.carousel-btn.next { right: var(--sg-sp-4); }
+.carousel-dots { display: flex; gap: var(--sg-sp-2); justify-content: center; margin-top: var(--sg-sp-4); }
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--sg-radius-pill);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: var(--sg-smoke);
+  transition: background var(--sg-dur-fast) var(--sg-ease);
+}
+.carousel-dot[aria-current="true"] { background: var(--sg-green); }
+.carousel-dot:focus-visible { outline: 2px solid var(--sg-green); outline-offset: 2px; }
+
+/* ——— Waitlist (hidden until a Toast URL is configured in site.js) ——— */
+.waitlist { background: var(--sg-surface-alt); }
+.waitlist-inner { max-width: 720px; margin: 0 auto; text-align: center; padding: var(--sg-sp-8) var(--sg-sp-6); }
+.waitlist-inner h2 { font-size: clamp(1.75rem, 2.5vw, 2.25rem); font-weight: 800; margin-bottom: var(--sg-sp-3); }
+/* Arsenic rather than graphite: graphite on cloud is 4.22:1, just under AA */
+.waitlist-inner p { color: var(--sg-arsenic); margin-bottom: var(--sg-sp-5); }
+.waitlist-buttons { display: flex; gap: var(--sg-sp-3); justify-content: center; flex-wrap: wrap; }
+
+/* ——— Footer ——— */
+/* Deliberately short — it is a sign-off, not a section. Pinned to the bottom
+ * by the flex column above when the page has room to spare. Small mark on the
+ * left, two lines of fine print on the right, at every width: letting it wrap
+ * into a stacked, centred block is what made it tall on narrow screens. */
+footer {
+  padding: var(--sg-sp-3) var(--sg-sp-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sg-sp-4);
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex: none;
+  /* Clears the natural height at every width, including the narrowest, where
+   * the copyright line wraps and the sign-off runs to three lines (~78px). */
+  max-height: 96px;
+}
+/* Class rather than `footer img`, so it also matches when the mark is inlined
+ * as an <svg> (the preview build does exactly that). The logo is 412x150, so
+ * 20px tall lands at ~55px wide. */
+.foot-logo { height: 20px; width: auto; flex: none; }
+/* Graphite rather than space/subtle: subtle on paper is 2.46:1, well under AA */
+footer .fine { font-size: var(--sg-fs-xs); color: var(--sg-fg-muted); text-align: right; }
+footer .fine span { display: block; }
+
+@media (max-width: 620px) {
+  footer { padding: var(--sg-sp-3) var(--sg-sp-5); gap: var(--sg-sp-3); }
+}
+
+/* ——— Motion preferences ——— */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  /* Skip the flight entirely and just land on the confirmation */
+  .signup-success .plane { display: none; }
+  .signup-success .success-text { opacity: 1; animation: none; }
+  /* The headline holds on "eat." instead of cycling (JS also stops the timer) */
+  .word-rotator > .word { transition: none; }
+}

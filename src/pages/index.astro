@@ -1,0 +1,532 @@
+---
+import '../styles/global.css';
+
+const title = 'Souper Greens — Coming Soon to Arcadia';
+const description =
+  'Souper Greens, a modern soup, salad, pasta, and fresh-baked bread buffet, is coming to 301 E Huntington Dr, Arcadia, California. Join the list for opening news.';
+const ogDescription =
+  'All you can eat. A modern soup, salad, pasta, and fresh-baked bread buffet is coming to Huntington Drive in Arcadia, California.';
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="canonical" href="https://soupergreens.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={ogDescription} />
+  <meta property="og:url" content="https://soupergreens.com/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <img class="hero-logo" src="/assets/logo-reverse-tight.svg" alt="Souper Greens" width="412" height="150">
+    <p class="eyebrow">Coming soon &middot; Arcadia, California</p>
+    <h1>
+      <span class="sr-only">All you can eat.</span>
+      <span aria-hidden="true">All you can <span class="word-rotator" id="word-rotator"><span class="word-sizer">fork.</span><span class="word is-active">slurp.</span><span class="word">dip.</span><span class="word">fork.</span><span class="word">mix.</span><span class="word">stack.</span><span class="word">swirl.</span><span class="word is-plain">eat.</span></span></span>
+    </h1>
+    <p class="lead">Unlimited soup, salad, pasta, and fresh-baked bread.</p>
+    <p class="hero-address">
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=301+E+Huntington+Dr%2C+Arcadia%2C+CA+91006" target="_blank" rel="noopener">301 E Huntington Dr, Arcadia, CA 91006</a>
+    </p>
+
+    <div class="signup">
+      <label class="signup-heading" id="signup-heading" for="signup-email">Be first through the door.</label>
+      <p class="signup-sub">First looks and opening news now — plus offers and updates once the doors are open. No spam, ever.</p>
+
+      <div class="signup-body" id="signup-body">
+        <form id="signup-form" method="post" action="/api/subscribe" aria-labelledby="signup-heading" novalidate>
+          <label class="hp" aria-hidden="true">Leave this field empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+
+          <input type="email" id="signup-email" name="email" required placeholder="you@example.com" autocomplete="email" aria-describedby="form-msg">
+
+          <input type="tel" id="signup-phone" name="phone" placeholder="(626) 555-0123 — optional" aria-label="Mobile number, optional" autocomplete="tel" inputmode="numeric" maxlength="14" aria-describedby="sms-consent-text">
+
+          <div class="consent" id="sms-consent" hidden>
+            <label class="consent-label">
+              <input type="checkbox" id="sms-consent-box" name="smsConsent" value="yes">
+              <span id="sms-consent-text">Text me news, offers, and updates from Souper Greens at this number. Consent isn't a condition of any purchase; message frequency varies; message and data rates may apply; reply STOP to opt out or HELP for help.</span>
+            </label>
+          </div>
+
+          <button class="btn primary" type="submit">Join the list</button>
+        </form>
+
+        <div class="signup-success" id="signup-success" hidden>
+          <svg class="plane" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" fill="currentColor"></path>
+          </svg>
+          <p class="success-text" id="success-text" tabindex="-1"></p>
+        </div>
+      </div>
+
+      <p class="form-msg" id="form-msg" role="alert"></p>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="photos" hidden>
+  <div class="section-head">
+    <p class="eyebrow">First look</p>
+    <h2>A little peek.</h2>
+  </div>
+  <div class="carousel" aria-roledescription="carousel" aria-label="Photos of Souper Greens">
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="carousel-track"></div>
+    </div>
+    <button class="carousel-btn prev" type="button" aria-label="Previous photo">&#8249;</button>
+    <button class="carousel-btn next" type="button" aria-label="Next photo">&#8250;</button>
+    <div class="carousel-dots" id="carousel-dots" role="group" aria-label="Choose photo"></div>
+  </div>
+</section>
+
+<section class="waitlist" id="waitlist" hidden>
+  <div class="waitlist-inner">
+    <p class="eyebrow">Plan your visit</p>
+    <h2>Put your name on the waitlist.</h2>
+    <p>Add your party from your phone and we'll hold your place in line.</p>
+    <div class="waitlist-buttons" id="waitlist-buttons"></div>
+  </div>
+</section>
+
+<footer>
+  <img class="foot-logo" src="/assets/logo-primary-tight.svg" alt="Souper Greens" width="412" height="150">
+  <p class="fine">
+    <span>a souper. concept</span>
+    <span>&copy; 2026 Souper Group LLC. All rights reserved.</span>
+  </p>
+</footer>
+
+<script>
+/* Souper Greens — landing page behavior.
+ *
+ * ── Editable config ─────────────────────────────────────────────
+ * PHOTOS: images shown in the "First look" carousel. Drop files in
+ * /public/assets/photos/ and list them here. Leave the array empty
+ * to hide the whole section.
+ *
+ * LOCATIONS: when a location has a Toast waitlist URL, a "Join the
+ * waitlist" button appears for it. Leave toastWaitlistUrl empty ("")
+ * until the Toast page is live; the section stays hidden until at
+ * least one location has a URL.
+ */
+const PHOTOS = [];
+
+const LOCATIONS = [
+  { name: 'Arcadia', toastWaitlistUrl: '' },
+];
+
+/* ── Rotating headline word ──
+ * slurp → fork → mix → eat, resting on "eat" before looping. Purely
+ * decorative: the h1 exposes a static "All you can eat." to screen readers.
+ */
+(function initWordRotator() {
+  const rotator = document.getElementById('word-rotator');
+  if (!rotator) return;
+
+  const words = Array.prototype.slice.call(rotator.querySelectorAll('.word'));
+  if (words.length < 2) return;
+
+  // Every word holds for a second; the last one rests longer before looping.
+  // Adding or removing a word is therefore a pure HTML edit.
+  const STEP_MS = 1000;
+  const REST_MS = 3000;
+  const TRANSITION_MS = 320; // 150ms out + 150ms in, plus a little slack
+
+  function holdFor(i) {
+    return i === words.length - 1 ? REST_MS : STEP_MS;
+  }
+
+  // Reduced motion: settle on the plain "eat." and never cycle.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    words.forEach((w) => w.classList.remove('is-active'));
+    words[words.length - 1].classList.add('is-active');
+    return;
+  }
+
+  let index = 0;
+  let timer = null;
+
+  function advance() {
+    const current = words[index];
+    const next = words[(index + 1) % words.length];
+
+    current.classList.remove('is-active');
+    current.classList.add('is-leaving');
+    next.classList.add('is-active');
+
+    // Once it has faded out, drop the leaving state so it waits below again.
+    // Invisible at that point, so resetting the transform is never seen.
+    setTimeout(() => current.classList.remove('is-leaving'), TRANSITION_MS);
+
+    index = (index + 1) % words.length;
+    schedule();
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = setTimeout(advance, holdFor(index));
+  }
+
+  // Don't animate against a hidden tab.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearTimeout(timer);
+    else schedule();
+  });
+
+  schedule();
+})();
+
+/* ── Carousel ── */
+(function initCarousel() {
+  const section = document.getElementById('photos');
+  if (!section || PHOTOS.length === 0) return;
+
+  const track = document.getElementById('carousel-track');
+  const dots = document.getElementById('carousel-dots');
+  const prev = section.querySelector('.carousel-btn.prev');
+  const next = section.querySelector('.carousel-btn.next');
+  let index = 0;
+
+  PHOTOS.forEach((photo, i) => {
+    const slide = document.createElement('figure');
+    slide.className = 'carousel-slide';
+    const img = document.createElement('img');
+    img.src = photo.src;
+    img.alt = photo.alt || '';
+    img.loading = i === 0 ? 'eager' : 'lazy';
+    slide.appendChild(img);
+    if (photo.caption) {
+      const cap = document.createElement('figcaption');
+      cap.textContent = photo.caption;
+      slide.appendChild(cap);
+    }
+    track.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot';
+    dot.type = 'button';
+    dot.setAttribute('aria-label', 'Photo ' + (i + 1) + ' of ' + PHOTOS.length);
+    dot.addEventListener('click', () => go(i));
+    dots.appendChild(dot);
+  });
+
+  function render() {
+    track.style.transform = 'translateX(-' + index * 100 + '%)';
+    dots.querySelectorAll('.carousel-dot').forEach((d, i) => {
+      d.setAttribute('aria-current', i === index ? 'true' : 'false');
+    });
+  }
+
+  // Advances only on user action — no auto-play, so no pause control is
+  // needed (WCAG 2.2.2) and slides never move under a reader's feet.
+  function go(i) {
+    index = (i + PHOTOS.length) % PHOTOS.length;
+    render();
+  }
+
+  prev.addEventListener('click', () => go(index - 1));
+  next.addEventListener('click', () => go(index + 1));
+
+  if (PHOTOS.length < 2) {
+    prev.hidden = true;
+    next.hidden = true;
+    dots.hidden = true;
+  }
+
+  section.hidden = false;
+  render();
+})();
+
+/* ── Waitlist (Toast) ── */
+(function initWaitlist() {
+  const section = document.getElementById('waitlist');
+  const buttons = document.getElementById('waitlist-buttons');
+  if (!section || !buttons) return;
+
+  const live = LOCATIONS.filter((l) => l.toastWaitlistUrl);
+  if (live.length === 0) return;
+
+  live.forEach((loc) => {
+    const a = document.createElement('a');
+    a.className = 'btn primary';
+    a.href = loc.toastWaitlistUrl;
+    a.rel = 'noopener';
+    a.textContent = live.length === 1
+      ? 'Join the waitlist'
+      : 'Join the waitlist — ' + loc.name;
+    buttons.appendChild(a);
+  });
+  section.hidden = false;
+})();
+
+/* ── Mailing-list signup ── */
+(function initSignup() {
+  const form = document.getElementById('signup-form');
+  const body = document.getElementById('signup-body');
+  const success = document.getElementById('signup-success');
+  const successText = document.getElementById('success-text');
+  const msg = document.getElementById('form-msg');
+  if (!form || !body || !success || !successText || !msg) return;
+
+  const emailInput = form.elements.email;
+  const phoneInput = form.elements.phone;
+  const consentRow = document.getElementById('sms-consent');
+  const consentBox = document.getElementById('sms-consent-box');
+  const button = form.querySelector('button[type="submit"]');
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  // US 10-digit, or 11 digits starting with the country code.
+  function normalizePhone(raw) {
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length === 10) return '+1' + digits;
+    if (digits.length === 11 && digits.charAt(0) === '1') return '+' + digits;
+    return null;
+  }
+
+  /* ── Phone field: digits only, formatted as (xxx) xxx-xxxx while typing ── */
+  function formatPhone(digits) {
+    if (digits.length === 0) return '';
+    if (digits.length < 4) return '(' + digits;
+    if (digits.length < 7) return '(' + digits.slice(0, 3) + ') ' + digits.slice(3);
+    return '(' + digits.slice(0, 3) + ') ' + digits.slice(3, 6) + '-' + digits.slice(6, 10);
+  }
+
+  // Map a caret position in the raw value to the same spot in the formatted
+  // one, counted in digits so punctuation never strands the cursor.
+  function caretAfterDigits(formatted, digitCount) {
+    let pos = 0;
+    let seen = 0;
+    while (pos < formatted.length && seen < digitCount) {
+      if (/\d/.test(formatted.charAt(pos))) seen++;
+      pos++;
+    }
+    return pos;
+  }
+
+  let lastDigits = phoneInput.value.replace(/\D/g, '');
+
+  phoneInput.addEventListener('input', (event) => {
+    const caret = phoneInput.selectionStart;
+    const before = phoneInput.value.slice(0, caret);
+    let digitsBefore = before.replace(/\D/g, '').length;
+    let digits = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+
+    // A backspace that removed only punctuation would be undone by
+    // reformatting, leaving the field stuck. Detect it by the digits being
+    // unchanged, and take the digit in front of the punctuation instead.
+    if (event.inputType === 'deleteContentBackward' && digits === lastDigits && digitsBefore > 0) {
+      digits = digits.slice(0, digitsBefore - 1) + digits.slice(digitsBefore);
+      digitsBefore -= 1;
+    }
+
+    const formatted = formatPhone(digits);
+    phoneInput.value = formatted;
+    lastDigits = digits;
+    const pos = caretAfterDigits(formatted, digitsBefore);
+    phoneInput.setSelectionRange(pos, pos);
+    syncConsentRow();
+    schedulePhoneCheck();
+  });
+
+  const ERR_EMAIL_EMPTY = 'Please enter your email address.';
+  const ERR_EMAIL_BAD = "That email address doesn't look right — mind checking it?";
+  const ERR_PHONE_BAD = 'Please enter a 10-digit US mobile number, or leave it blank.';
+  const ERR_CONSENT = 'Please check the box so we can text you, or clear the number.';
+  const ERR_SERVER = 'Something went wrong on our end — please try again in a minute.';
+  const ALL_MESSAGES = [ERR_EMAIL_EMPTY, ERR_EMAIL_BAD, ERR_PHONE_BAD, ERR_CONSENT, ERR_SERVER];
+
+  // Which field the visible message belongs to, so typing in one field
+  // doesn't wipe an error about another.
+  let msgOwner = null;
+
+  function clearError() {
+    msg.textContent = '';
+    msgOwner = null;
+    emailInput.removeAttribute('aria-invalid');
+    phoneInput.removeAttribute('aria-invalid');
+  }
+
+  function showError(text, field, moveFocus) {
+    msg.textContent = '⚠ ' + text;
+    msgOwner = field || null;
+    if (field) {
+      field.setAttribute('aria-invalid', 'true');
+      // Live validation must never yank the cursor mid-typing.
+      if (moveFocus) field.focus({ preventScroll: true });
+    }
+  }
+
+  function clearFieldError(field) {
+    field.removeAttribute('aria-invalid');
+    if (msgOwner === field) {
+      msg.textContent = '';
+      msgOwner = null;
+    }
+  }
+
+  /* ── Live validation, 1s after typing stops ── */
+  const DEBOUNCE_MS = 1000;
+  let emailTimer = null;
+  let phoneTimer = null;
+
+  function emailProblem(value) {
+    if (value === '') return null; // nothing to complain about yet
+    if (!EMAIL_RE.test(value) || value.length > 254) return ERR_EMAIL_BAD;
+    return null;
+  }
+
+  function phoneProblem(value) {
+    if (value === '') return null;
+    if (!normalizePhone(value)) return ERR_PHONE_BAD;
+    return null;
+  }
+
+  emailInput.addEventListener('input', () => {
+    clearTimeout(emailTimer);
+    emailTimer = setTimeout(() => {
+      const problem = emailProblem(emailInput.value.trim());
+      if (problem) showError(problem, emailInput, false);
+      else clearFieldError(emailInput);
+    }, DEBOUNCE_MS);
+  });
+
+  function schedulePhoneCheck() {
+    clearTimeout(phoneTimer);
+    phoneTimer = setTimeout(() => {
+      const problem = phoneProblem(phoneInput.value.trim());
+      if (problem) showError(problem, phoneInput, false);
+      else clearFieldError(phoneInput);
+    }, DEBOUNCE_MS);
+  }
+
+  // The consent checkbox only matters once there's a number to consent about.
+  function syncConsentRow() {
+    const hasPhone = phoneInput.value.trim() !== '';
+    consentRow.hidden = !hasPhone;
+    if (!hasPhone) consentBox.checked = false;
+  }
+  syncConsentRow();
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    clearError();
+
+    clearTimeout(emailTimer);
+    clearTimeout(phoneTimer);
+
+    const email = emailInput.value.trim();
+    if (!email) return showError(ERR_EMAIL_EMPTY, emailInput, true);
+    if (emailProblem(email)) return showError(ERR_EMAIL_BAD, emailInput, true);
+
+    const rawPhone = phoneInput.value.trim();
+    let phone = null;
+    if (rawPhone !== '') {
+      phone = normalizePhone(rawPhone);
+      if (!phone) return showError(ERR_PHONE_BAD, phoneInput, true);
+      if (!consentBox.checked) return showError(ERR_CONSENT, consentBox, true);
+    }
+
+    button.disabled = true;
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          phone: phone,
+          smsConsent: phone ? consentBox.checked : false,
+          website: form.elements.website.value, // honeypot
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        showSuccess(!!phone);
+      } else {
+        showError(data.error || ERR_SERVER, null, false);
+        button.disabled = false;
+      }
+    } catch (err) {
+      showError(ERR_SERVER, null, false);
+      button.disabled = false;
+    }
+  });
+
+  function showSuccess(withPhone) {
+    submitted = true;
+    // Pin the height before swapping so the layout doesn't jump.
+    body.style.minHeight = body.offsetHeight + 'px';
+    form.hidden = true;
+    success.hidden = false;
+    successText.textContent = withPhone
+      ? "You're on the list. We'll email and text you."
+      : "You're on the list. We'll save you a seat.";
+    successText.focus({ preventScroll: true });
+  }
+
+  /* ── Reserve the tallest state so the footer never moves ──
+   * The form grows when the consent row appears and the message line grows
+   * with the longest error, so both areas are sized up front to whatever
+   * their worst case is at this viewport width.
+   */
+  let submitted = false;
+
+  function reserveSpace() {
+    if (submitted) return;
+
+    // Form: tallest with the consent row showing. Nothing is painted between
+    // these lines, so revealing it to measure is invisible.
+    const consentWasHidden = consentRow.hidden;
+    consentRow.hidden = false;
+    body.style.minHeight = '';
+    const formHeight = form.getBoundingClientRect().height;
+    consentRow.hidden = consentWasHidden;
+    body.style.minHeight = formHeight + 'px';
+
+    // Message line: tallest of every message it might have to show.
+    const previous = msg.textContent;
+    msg.style.minHeight = '';
+    let tallest = 0;
+    ALL_MESSAGES.forEach((text) => {
+      msg.textContent = '⚠ ' + text;
+      tallest = Math.max(tallest, msg.getBoundingClientRect().height);
+    });
+    msg.textContent = previous;
+    msg.style.minHeight = tallest + 'px';
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(reserveSpace, 150);
+  });
+
+  reserveSpace();
+  // Web fonts change the metrics, so measure again once they land.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(reserveSpace);
+  }
+
+  // Land keyboard users straight in the email field on desktop. Skipped on
+  // touch, where autofocus pops the keyboard and scrolls past the hero.
+  if (window.matchMedia('(pointer: fine)').matches) {
+    emailInput.focus({ preventScroll: true });
+  }
+})();
+</script>
+</body>
+</html>

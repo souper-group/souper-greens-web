@@ -1,0 +1,20 @@
+{
+  "name": "souper-greens-web",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro build && wrangler dev -c dist/server/wrangler.json",
+    "deploy": "astro build && wrangler deploy -c dist/server/wrangler.json",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.1.6",
+    "astro": "^7.1.5"
+  },
+  "devDependencies": {
+    "wrangler": "^4.115.0"
+  }
+}

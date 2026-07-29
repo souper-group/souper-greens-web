@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "souper-greens-web",
+  "compatibility_date": "2026-07-29",
+  // Astro's Cloudflare adapter emits Node built-ins for the /api/subscribe route.
+  "compatibility_flags": ["nodejs_compat"],
+
+
+  // Astro's adapter splits the build into dist/client (static) and dist/server
+  // (the Worker), and rewrites this path to match when it generates the
+  // deployable config at dist/server/wrangler.json. `main` is supplied by the
+  // adapter there too — setting it here breaks the build, because the Vite
+  // plugin validates it before the file it points at exists.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+
+  // Mailing list store. Create it once with:
+  //   npx wrangler kv namespace create MAILING_LIST
+  // then paste the returned id below. `preview_id` is used by `wrangler dev`.
+  "kv_namespaces": [
+    {
+      "binding": "MAILING_LIST",
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ],
+
+  "observability": {
+    "enabled": true
+  }
+}
