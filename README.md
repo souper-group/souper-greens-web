@@ -68,10 +68,92 @@ on first deploy. Astro sessions are unused here; the binding only has to exist.
 > secrets (API tokens, and the Kit key when that lands) belong in
 > `wrangler secret put` or `.dev.vars`, never in this repo.
 
-To attach the domain, add `soupergreens.com` and `www.soupergreens.com` as
-custom domains on the Worker, and keep "Always Use HTTPS" on for the zone. The
-www → apex redirect needs a Redirect Rule on the zone; the `_redirects` file
-that Pages honoured does **not** apply to Workers.
+## Custom domains and redirects
+
+Do this once, after the first successful deploy. Dashboard wording shifts from
+time to time, so match on intent rather than exact labels.
+
+### 0. The zone has to be on Cloudflare
+
+`soupergreens.com` must be in the same Cloudflare account as the Worker.
+If it isn't yet: **Account Home → Add a domain**, pick the Free plan, then
+change the nameservers at your registrar to the two Cloudflare gives you.
+Wait for the zone to go **Active** before continuing.
+
+### 1. Attach both hostnames to the Worker
+
+**Compute / Workers & Pages → souper-greens-web → Settings → Domains & Routes
+→ Add → Custom Domain**, once for each:
+
+- `soupergreens.com`
+- `www.soupergreens.com`
+
+Pick **Custom Domain**, not Route. A custom domain creates the DNS record and
+issues the TLS certificate for you; a route only attaches the Worker to a
+record you already manage.
+
+Add `www` even though it only ever redirects — the redirect still has to be
+served over HTTPS, which needs a valid certificate on that hostname.
+
+Certificates take a few minutes. Both should read **Active** before you test.
+
+### 2. Redirect www → apex
+
+This is a **zone-level Redirect Rule**, not a Worker setting. The `_redirects`
+file that Cloudflare Pages honoured does nothing on Workers — this rule is what
+replaces it.
+
+**The zone (soupergreens.com) → Rules → Redirect Rules → Create rule**
+
+- **Name:** `www to apex`
+- **If** — use the expression editor:
+  ```
+  http.host eq "www.soupergreens.com"
+  ```
+- **Then:**
+  - Type: **Dynamic**
+  - Expression:
+    ```
+    concat("https://soupergreens.com", http.request.uri.path)
+    ```
+  - Status code: **301**
+  - **Preserve query string:** on
+
+Use *Dynamic* rather than *Static*. A static redirect to
+`https://soupergreens.com` throws away the path, so `/menu` would land on the
+homepage.
+
+Redirect Rules run before Workers in Cloudflare's request pipeline, so www
+traffic is redirected without ever reaching the Worker.
+
+### 3. Force HTTPS
+
+On the zone:
+
+- **SSL/TLS → Overview → encryption mode: Full (strict)**
+- **SSL/TLS → Edge Certificates → Always Use HTTPS: On**
+
+That covers both `http://` variants. It is on by default for new zones; just
+confirm.
+
+### 4. Verify all four
+
+```sh
+curl -sI http://soupergreens.com/      | grep -iE '^HTTP|^location'
+curl -sI http://www.soupergreens.com/  | grep -iE '^HTTP|^location'
+curl -sI https://www.soupergreens.com/ | grep -iE '^HTTP|^location'
+curl -sI https://soupergreens.com/     | grep -iE '^HTTP'
+```
+
+| Request | Expected |
+|---|---|
+| `http://soupergreens.com` | 301 → `https://soupergreens.com/` |
+| `http://www.soupergreens.com` | 301 → https, then 301 → apex |
+| `https://www.soupergreens.com` | 301 → `https://soupergreens.com/` |
+| `https://soupergreens.com` | 200 |
+
+DNS and certificates can take a few minutes to settle; a failure in the first
+minute or two usually is not a misconfiguration.
 
 ## Reading the mailing list
 
