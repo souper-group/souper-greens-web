@@ -17,13 +17,14 @@
     "not_found_handling": "404-page"
   },
 
-  // Mailing list store. Create it once with:
-  //   npx wrangler kv namespace create MAILING_LIST
-  // then paste the returned id below. `preview_id` is used by `wrangler dev`.
+  // Mailing list store (namespace "souper-greens-web-MAILING_LIST").
+  // The id names the namespace; it is not a credential and is safe to commit.
+  // Access requires Cloudflare account auth, which lives in `wrangler login`
+  // or `wrangler secret` — never in this file.
   "kv_namespaces": [
     {
       "binding": "MAILING_LIST",
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "id": "491565b41ab648fb8272b5fc2ed590a6"
     }
   ],
 

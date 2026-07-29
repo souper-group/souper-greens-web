@@ -51,19 +51,22 @@ build has produced it.
 
 ## Deploying
 
-One-time setup:
+The `MAILING_LIST` KV namespace already exists and its id is committed in
+`wrangler.jsonc`, so deploying is just:
 
 ```sh
 npx wrangler login
-npx wrangler kv namespace create MAILING_LIST
-```
-
-Paste the returned namespace id into `wrangler.jsonc` (replacing
-`REPLACE_WITH_KV_NAMESPACE_ID`), then:
-
-```sh
 npm run deploy      # astro build && wrangler deploy -c dist/server/wrangler.json
 ```
+
+The `SESSION` binding the adapter adds deliberately has no id — Wrangler
+[provisions it automatically](https://developers.cloudflare.com/workers/wrangler/configuration/#automatic-provisioning)
+on first deploy. Astro sessions are unused here; the binding only has to exist.
+
+> The namespace id is an identifier, not a credential, so committing it is the
+> documented practice — reaching the data needs Cloudflare account auth. Real
+> secrets (API tokens, and the Kit key when that lands) belong in
+> `wrangler secret put` or `.dev.vars`, never in this repo.
 
 To attach the domain, add `soupergreens.com` and `www.soupergreens.com` as
 custom domains on the Worker, and keep "Always Use HTTPS" on for the zone. The
