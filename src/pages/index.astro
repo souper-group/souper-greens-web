@@ -6,6 +6,10 @@ const description =
   'Souper Greens, a modern soup, salad, pasta, and fresh-baked bread buffet, is coming to 301 E Huntington Dr, Arcadia, California. Join the list for opening news.';
 const ogDescription =
   'All you can eat. A modern soup, salad, pasta, and fresh-baked bread buffet is coming to Huntington Drive in Arcadia, California.';
+
+// Derived from `site` in astro.config.mjs, so every page is self-canonical on
+// the apex host. www 301s to apex at the edge, so nothing here emits a www URL.
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -16,11 +20,11 @@ const ogDescription =
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
-  <link rel="canonical" href="https://soupergreens.com/" />
+  <link rel="canonical" href={canonical} />
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={ogDescription} />
-  <meta property="og:url" content="https://soupergreens.com/" />
+  <meta property="og:url" content={canonical} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
