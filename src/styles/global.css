@@ -345,6 +345,12 @@ img { max-width: 100%; }
   color: var(--sg-paper);
   animation: sg-plane-send 900ms var(--sg-ease) forwards;
 }
+.success-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sg-sp-3);
+}
 .signup-success .success-text {
   font-size: var(--sg-fs-h4);
   font-weight: 700;
@@ -353,6 +359,25 @@ img { max-width: 100%; }
   opacity: 0;
   animation: sg-success-in 420ms var(--sg-ease) 380ms forwards;
 }
+/* Follows the confirmation in, a beat later, so it reads as a footnote */
+.link-btn {
+  font-family: var(--sg-font-sans);
+  font-size: var(--sg-fs-sm);
+  font-weight: 600;
+  color: rgba(250, 251, 255, 0.85);
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(250, 251, 255, 0.45);
+  transition: color var(--sg-dur-fast) var(--sg-ease), text-decoration-color var(--sg-dur-fast) var(--sg-ease);
+  opacity: 0;
+  animation: sg-success-in 420ms var(--sg-ease) 650ms forwards;
+}
+.link-btn:hover { color: var(--sg-paper); text-decoration-color: var(--sg-paper); }
+.link-btn:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
 @keyframes sg-plane-send {
   0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
   25%  { transform: translate(-6px, 4px) rotate(-8deg) scale(0.96); opacity: 1; }
@@ -489,6 +514,7 @@ footer .fine span { display: block; }
   /* Skip the flight entirely and just land on the confirmation */
   .signup-success .plane { display: none; }
   .signup-success .success-text { opacity: 1; animation: none; }
+  .link-btn { opacity: 1; animation: none; }
   /* The headline holds on "eat." instead of cycling (JS also stops the timer) */
   .word-rotator > .word { transition: none; }
 }

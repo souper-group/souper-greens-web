@@ -72,7 +72,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           <svg class="plane" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" fill="currentColor"></path>
           </svg>
-          <p class="success-text" id="success-text" tabindex="-1"></p>
+          <div class="success-body">
+            <p class="success-text" id="success-text" tabindex="-1"></p>
+            <button class="link-btn" id="add-another" type="button">Sign up someone else</button>
+          </div>
         </div>
       </div>
 
@@ -481,6 +484,20 @@ const LOCATIONS = [
       : "You're on the list. We'll save you a seat.";
     successText.focus({ preventScroll: true });
   }
+
+  // "Sign up someone else" — swap the form back in, blank, ready to go again.
+  // The container keeps its pinned height, so the swap doesn't shift anything;
+  // hiding and re-showing the success block later restarts its animations.
+  document.getElementById('add-another').addEventListener('click', () => {
+    form.reset();
+    clearError();
+    syncConsentRow();
+    button.disabled = false;
+    submitted = false;
+    success.hidden = true;
+    form.hidden = false;
+    emailInput.focus({ preventScroll: true });
+  });
 
   /* ── Reserve the tallest state so the footer never moves ──
    * The form grows when the consent row appears and the message line grows
