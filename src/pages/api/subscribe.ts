@@ -221,17 +221,29 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // KV write succeeded — the signup is safe regardless of what happens next.
+  // The Kit outcome is recorded on the KV record itself so it can be diagnosed
+  // from the dashboard's KV view without chasing logs: kitSyncedAt on success,
+  // kitError with the reason on failure, kitSkipped when no key is configured.
   const kitApiKey = typeof bindings.KIT_API_KEY === 'string' ? bindings.KIT_API_KEY : '';
   if (kitApiKey) {
     try {
       await forwardToKit(email, kitApiKey, mailingList);
       record.kitSyncedAt = new Date().toISOString();
-      await mailingList.put(`subscriber:${email}`, JSON.stringify(record));
+      delete record.kitError;
     } catch (err) {
       // Not the subscriber's problem: they are in KV, and the missing
       // kitSyncedAt field marks this record for a later backfill.
-      console.error(`Kit forward failed for ${email}:`, err instanceof Error ? err.message : err);
+      const message = err instanceof Error ? err.message : String(err);
+      record.kitError = message.slice(0, 300);
+      console.error(`Kit forward failed for ${email}:`, message);
     }
+  } else {
+    record.kitSkipped = 'no KIT_API_KEY secret visible to the worker';
+  }
+  try {
+    await mailingList.put(`subscriber:${email}`, JSON.stringify(record));
+  } catch {
+    // The original record is already stored; losing the annotation is fine.
   }
 
   return respond(true, null, 200, wantsHtml);
