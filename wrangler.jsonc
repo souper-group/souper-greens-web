@@ -28,6 +28,17 @@
     }
   ],
 
+  // Per-IP throttle for /api/subscribe, behind the zone's WAF rate rule.
+  // Generous on purpose: "Sign up someone else" means one household can
+  // legitimately submit several times in a minute.
+  "ratelimits": [
+    {
+      "name": "SIGNUP_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 5, "period": 60 }
+    }
+  ],
+
   "observability": {
     "enabled": true
   }

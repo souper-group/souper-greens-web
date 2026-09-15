@@ -4,7 +4,11 @@ import type { APIRoute } from 'astro';
 // resolves inside the Worker and never during the static prerender.
 import { env } from 'cloudflare:workers';
 
-type KVLike = { put(key: string, value: string): Promise<unknown> };
+type KVLike = {
+  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<unknown>;
+  get(key: string): Promise<string | null>;
+};
+type RateLimiterLike = { limit(options: { key: string }): Promise<{ success: boolean }> };
 
 /**
  * POST /api/subscribe — store a mailing-list signup in Workers KV.
@@ -48,6 +52,62 @@ function isTruthy(value: unknown): boolean {
   return value === true || value === 'yes' || value === 'on' || value === 'true';
 }
 
+/* ── Kit forwarding ──
+ * KV is the durable record; Kit is best-effort on top. Adding a subscriber to
+ * the form via the API still triggers the form's double opt-in, so people
+ * confirm by email before going active. A Kit failure is logged and the record
+ * simply lacks kitSyncedAt, which is the backfill marker.
+ */
+const KIT_API_BASE = 'https://api.kit.com/v4';
+const KIT_FORM_NAME = 'landing page'; // matched case-insensitively
+const KIT_FORM_CACHE_KEY = 'kit:form_id';
+
+function kitFetch(path: string, apiKey: string, init?: { method?: string; body?: string }): Promise<Response> {
+  return fetch(KIT_API_BASE + path, {
+    method: init?.method ?? 'GET',
+    body: init?.body,
+    headers: { 'Content-Type': 'application/json', 'X-Kit-Api-Key': apiKey },
+    signal: AbortSignal.timeout(5000),
+  });
+}
+
+async function resolveKitFormId(apiKey: string, kv: KVLike): Promise<string> {
+  const cached = await kv.get(KIT_FORM_CACHE_KEY);
+  if (cached) return cached;
+
+  const res = await kitFetch('/forms', apiKey);
+  if (!res.ok) throw new Error(`Kit GET /forms responded ${res.status}`);
+  const data = (await res.json()) as { forms?: Array<{ id: number | string; name?: string }> };
+  const forms = data.forms ?? [];
+  const match =
+    forms.find((f) => (f.name ?? '').trim().toLowerCase() === KIT_FORM_NAME) ??
+    (forms.length === 1 ? forms[0] : undefined);
+  if (!match) throw new Error(`Kit form "${KIT_FORM_NAME}" not found among ${forms.length} forms`);
+
+  const id = String(match.id);
+  await kv.put(KIT_FORM_CACHE_KEY, id, { expirationTtl: 86400 });
+  return id;
+}
+
+async function forwardToKit(email: string, apiKey: string, kv: KVLike): Promise<void> {
+  const formId = await resolveKitFormId(apiKey, kv);
+  // Kit wants the subscriber to exist before a form add by email. The create
+  // is an upsert in practice, so an already-known address is not an error —
+  // only the form add is required to succeed.
+  const create = await kitFetch('/subscribers', apiKey, {
+    method: 'POST',
+    body: JSON.stringify({ email_address: email }),
+  });
+  if (!create.ok && create.status !== 409 && create.status !== 422) {
+    throw new Error(`Kit POST /subscribers responded ${create.status}`);
+  }
+  const add = await kitFetch(`/forms/${formId}/subscribers`, apiKey, {
+    method: 'POST',
+    body: JSON.stringify({ email_address: email }),
+  });
+  if (!add.ok) throw new Error(`Kit form add responded ${add.status}`);
+}
+
 function respond(ok: boolean, error: string | null, status: number, wantsHtml: boolean): Response {
   if (wantsHtml) {
     const heading = ok ? "You're on the list." : 'Hmm, that did not work.';
@@ -73,9 +133,28 @@ export const POST: APIRoute = async ({ request }) => {
   let honeypot = '';
   let rawPhone = '';
   let smsConsent = false;
-  let wantsHtml = false;
-
+  // A JSON body means the client script is running; anything else is the
+  // no-JS form post, which wants an HTML page back.
   const contentType = request.headers.get('content-type') || '';
+  let wantsHtml = !contentType.includes('application/json');
+
+  // Second line of defence behind the zone-level WAF rule: per-IP throttle
+  // inside the Worker, mostly to keep a scripted client from spraying Kit
+  // confirmation emails. Fails open if the binding is missing (local dev).
+  const bindings = env as unknown as Record<string, unknown>;
+  const limiter = bindings.SIGNUP_RATE_LIMITER as RateLimiterLike | undefined;
+  if (limiter && typeof limiter.limit === 'function') {
+    try {
+      const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+      const { success } = await limiter.limit({ key: ip });
+      if (!success) {
+        return respond(false, 'That was a lot of signups at once — give it a minute and try again.', 429, wantsHtml);
+      }
+    } catch {
+      // fail open — the WAF rule still stands in front of us
+    }
+  }
+
   try {
     if (contentType.includes('application/json')) {
       const body = (await request.json()) as Record<string, unknown>;
@@ -117,7 +196,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!smsConsent) phone = null;
   }
 
-  const mailingList = (env as unknown as Record<string, KVLike | undefined>).MAILING_LIST;
+  const mailingList = bindings.MAILING_LIST as KVLike | undefined;
   if (!mailingList || typeof mailingList.put !== 'function') {
     return respond(false, 'Signups are not quite ready yet — please try again later.', 500, wantsHtml);
   }
@@ -139,6 +218,20 @@ export const POST: APIRoute = async ({ request }) => {
     await mailingList.put(`subscriber:${email}`, JSON.stringify(record));
   } catch {
     return respond(false, 'Something went wrong saving your signup — please try again in a minute.', 500, wantsHtml);
+  }
+
+  // KV write succeeded — the signup is safe regardless of what happens next.
+  const kitApiKey = typeof bindings.KIT_API_KEY === 'string' ? bindings.KIT_API_KEY : '';
+  if (kitApiKey) {
+    try {
+      await forwardToKit(email, kitApiKey, mailingList);
+      record.kitSyncedAt = new Date().toISOString();
+      await mailingList.put(`subscriber:${email}`, JSON.stringify(record));
+    } catch (err) {
+      // Not the subscriber's problem: they are in KV, and the missing
+      // kitSyncedAt field marks this record for a later backfill.
+      console.error(`Kit forward failed for ${email}:`, err instanceof Error ? err.message : err);
+    }
   }
 
   return respond(true, null, 200, wantsHtml);

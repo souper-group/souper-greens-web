@@ -155,6 +155,41 @@ curl -sI https://soupergreens.com/     | grep -iE '^HTTP'
 DNS and certificates can take a few minutes to settle; a failure in the first
 minute or two usually is not a misconfiguration.
 
+## Kit forwarding
+
+Each signup is written to KV first (the durable record), then forwarded
+best-effort to [Kit](https://kit.com): the subscriber is created and added to
+the form named **Landing page**, which triggers that form's double opt-in
+confirmation email. A Kit outage or error never fails the signup — the record
+just lacks a `kitSyncedAt` field, which marks it for backfill.
+
+Configuration:
+
+- `KIT_API_KEY` — a **runtime secret** on the Worker (Settings → Variables and
+  Secrets). Never in this repo. Without it, forwarding is silently skipped.
+- The form is found by name (case-insensitive "landing page"), or used outright
+  if the account has exactly one form. Its id is cached in KV
+  (`kit:form_id`, 24h TTL) — rename the form in Kit and the cache picks it up
+  within a day, or delete that KV key to force it.
+- Kit failures are logged (`Kit forward failed for …`) and visible under the
+  Worker's observability/logs in the dashboard.
+
+## Rate limiting
+
+Two layers on `POST /api/subscribe`, mostly to stop a script from spraying
+Kit confirmation emails at strangers:
+
+1. A zone WAF rate-limiting rule (dashboard: soupergreens.com → Security →
+   WAF → Rate limiting rules): 5 requests / 10 seconds per IP → block.
+2. In-Worker: the `SIGNUP_RATE_LIMITER` binding in `wrangler.jsonc`
+   (5 requests / 60 seconds per IP → 429). Deliberately generous — the
+   "Sign up someone else" flow means one household can submit several times
+   legitimately. Fails open if the binding is unavailable.
+
+Local note: `wrangler dev` 4.115 crashed intermittently after the limiter
+engaged; upgrading wrangler fixed it. If local dev misbehaves, suspect the
+wrangler version before the code.
+
 ## Reading the mailing list
 
 ```sh
