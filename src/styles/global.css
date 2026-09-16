@@ -539,7 +539,7 @@ footer .fine span { display: block; }
 .back-home a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
 
 /* Footer Instagram mark: full-colour glyph, icon-only, labelled for AT */
-.foot-brand { display: flex; align-items: center; gap: var(--sg-sp-4); flex: none; }
+.foot-brand { display: flex; align-items: center; gap: var(--sg-sp-6); flex: none; }
 .foot-ig { display: inline-flex; }
 .foot-ig svg { width: 22px; height: 22px; display: block; }
 .foot-ig:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
