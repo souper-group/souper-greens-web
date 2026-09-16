@@ -11,9 +11,10 @@ import '../styles/global.css';
 const title = 'Seat saved — Souper Greens';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
-// Add real profiles as they launch; the row stays hidden while this is empty.
-// e.g. { label: 'Instagram', href: 'https://www.instagram.com/soupergreens' }
-const SOCIALS: Array<{ label: string; href: string }> = [];
+// Add profiles as they launch; the row stays hidden while this is empty.
+const SOCIALS: Array<{ label: string; href: string }> = [
+  { label: 'Follow us on Instagram', href: 'https://www.instagram.com/souper.greens' },
+];
 ---
 
 <!doctype html>
