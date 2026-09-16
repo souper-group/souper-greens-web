@@ -520,15 +520,20 @@ footer .fine span { display: block; }
 }
 
 /* ——— Confirmed page ——— */
-.social-row { display: flex; gap: var(--sg-sp-5); justify-content: center; flex-wrap: wrap; }
-.social-row a {
-  color: var(--sg-paper);
+/* Follow buttons: the primary action once the email side is done. */
+.social-row { display: flex; gap: var(--sg-sp-3); justify-content: center; flex-wrap: wrap; }
+.social-row .btn svg { width: 20px; height: 20px; flex: none; }
+
+/* Quiet route home, demoted below the follow action */
+.back-home { margin-top: var(--sg-sp-6); }
+.back-home a {
+  font-size: var(--sg-fs-sm);
   font-weight: 600;
+  color: var(--sg-paper);
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: rgba(250, 251, 255, 0.45);
   transition: text-decoration-color var(--sg-dur-fast) var(--sg-ease);
 }
-.social-row a:hover { text-decoration-color: var(--sg-paper); }
-.social-row a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
-.confirmed-actions { margin-top: var(--sg-sp-6); }
+.back-home a:hover { text-decoration-color: var(--sg-paper); }
+.back-home a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }

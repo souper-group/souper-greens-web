@@ -12,8 +12,8 @@ const title = 'Seat saved — Souper Greens';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 // Add profiles as they launch; the row stays hidden while this is empty.
-const SOCIALS: Array<{ label: string; href: string }> = [
-  { label: 'Follow us on Instagram', href: 'https://www.instagram.com/souper.greens' },
+const SOCIALS: Array<{ label: string; href: string; icon?: string }> = [
+  { label: 'Follow us on Instagram', href: 'https://www.instagram.com/souper.greens', icon: 'instagram' },
 ];
 ---
 
@@ -52,13 +52,22 @@ const SOCIALS: Array<{ label: string; href: string }> = [
     {SOCIALS.length > 0 && (
       <p class="social-row">
         {SOCIALS.map((s) => (
-          <a href={s.href} target="_blank" rel="noopener">{s.label}</a>
+          <a class="btn primary" href={s.href} target="_blank" rel="noopener">
+            {s.icon === 'instagram' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="5.5"></rect>
+                <circle cx="12" cy="12" r="4.5"></circle>
+                <circle cx="17.6" cy="6.4" r="1.4" fill="currentColor" stroke="none"></circle>
+              </svg>
+            )}
+            {s.label}
+          </a>
         ))}
       </p>
     )}
 
-    <p class="confirmed-actions">
-      <a class="btn primary" href="/">Back to soupergreens.com</a>
+    <p class="back-home">
+      <a href="/">Back to soupergreens.com</a>
     </p>
   </div>
 </header>
