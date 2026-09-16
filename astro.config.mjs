@@ -13,5 +13,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://soupergreens.com',
   adapter: cloudflare(),
-  integrations: [sitemap()],
+  // /confirmed is a post-opt-in utility page (also noindexed) — keep it out
+  // of the sitemap.
+  integrations: [sitemap({ filter: (page) => !page.includes('/confirmed') })],
 });

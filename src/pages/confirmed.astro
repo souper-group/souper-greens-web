@@ -1,0 +1,74 @@
+---
+import '../styles/global.css';
+
+/**
+ * Post-confirmation landing page. Kit's confirmation email redirects here
+ * after someone clicks "Save my seat" (set in the Landing page form's
+ * Confirmation Email settings → redirect to a URL). Utility page: noindexed
+ * and excluded from the sitemap.
+ */
+
+const title = 'Seat saved — Souper Greens';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Add real profiles as they launch; the row stays hidden while this is empty.
+// e.g. { label: 'Instagram', href: 'https://www.instagram.com/soupergreens' }
+const SOCIALS: Array<{ label: string; href: string }> = [];
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="canonical" href={canonical} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <img class="hero-logo" src="/assets/logo-reverse-tight.svg" alt="Souper Greens" width="412" height="150" />
+    <p class="eyebrow">You're confirmed</p>
+    <h1>Seat saved.</h1>
+    <p class="lead">
+      That's everything — your welcome email is already on its way. It comes
+      from a real, reply-able inbox, so if you have a question, a request, or a
+      strong opinion about soup, just hit reply.
+    </p>
+    <p class="hero-address">
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=301+E+Huntington+Dr%2C+Arcadia%2C+CA+91006" target="_blank" rel="noopener">301 E Huntington Dr, Arcadia, CA 91006</a>
+    </p>
+
+    {SOCIALS.length > 0 && (
+      <p class="social-row">
+        {SOCIALS.map((s) => (
+          <a href={s.href} target="_blank" rel="noopener">{s.label}</a>
+        ))}
+      </p>
+    )}
+
+    <p class="confirmed-actions">
+      <a class="btn primary" href="/">Back to soupergreens.com</a>
+    </p>
+  </div>
+</header>
+
+<footer>
+  <img class="foot-logo" src="/assets/logo-primary-tight.svg" alt="Souper Greens" width="412" height="150" />
+  <p class="fine">
+    <span>a souper. concept</span>
+    <span>&copy; 2026 Souper Group LLC. All rights served.</span>
+  </p>
+</footer>
+
+</body>
+</html>
