@@ -39,6 +39,13 @@
     }
   ],
 
+  // Plain-text runtime variables. Deliberately empty — and NEVER put the Kit
+  // key (or any credential) here: this file is committed, and `vars` entries
+  // are visible in git. Secrets live in the dashboard (Settings → Variables
+  // and Secrets, type Secret), which survives deploys; plain-text dashboard
+  // variables would be wiped by each deploy, secrets are not.
+  "vars": {},
+
   "observability": {
     "enabled": true,
     "logs": {
