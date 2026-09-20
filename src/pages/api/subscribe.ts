@@ -37,9 +37,10 @@ export const prerender = false;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const SMS_CONSENT_TEXT =
-  'Text me news, offers, and updates from Souper Greens at this number. ' +
-  "Consent isn't a condition of any purchase; message frequency varies; " +
-  'message and data rates may apply; reply STOP to opt out or HELP for help.';
+  '(Optional) Yes — send me Souper Greens marketing texts: news, offers, and ' +
+  "opening updates at this number. Consent isn't a condition of any purchase; " +
+  'message frequency varies; message and data rates may apply; reply STOP to ' +
+  'opt out or HELP for help.';
 
 function normalizePhone(raw: string): string | null {
   const digits = String(raw || '').replace(/\D/g, '');

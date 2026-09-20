@@ -244,7 +244,7 @@ img { max-width: 100%; }
   margin: 0 auto var(--sg-sp-5);
 }
 .hero-address { margin: 0 auto var(--sg-sp-7); }
-.hero-address a {
+.hero-address a, .hero-contact a {
   font-size: var(--sg-fs-sm);
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -254,8 +254,8 @@ img { max-width: 100%; }
   text-decoration-color: rgba(250, 251, 255, 0.45);
   transition: text-decoration-color var(--sg-dur-fast) var(--sg-ease);
 }
-.hero-address a:hover { text-decoration-color: var(--sg-paper); }
-.hero-address a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
+.hero-address a:hover, .hero-contact a:hover { text-decoration-color: var(--sg-paper); }
+.hero-address a:focus-visible, .hero-contact a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
 
 /* ——— Signup form (hero + newsletter band pattern) ——— */
 .signup { max-width: 560px; margin: 0 auto; }
@@ -607,4 +607,14 @@ footer .fine a:focus-visible { outline: 2px solid var(--sg-green); outline-offse
   color: rgba(250, 251, 255, 0.85);
   max-width: 420px;
   margin: var(--sg-sp-4) auto 0;
+}
+
+
+/* Contact line under the address: public, discoverable route to the
+ * restaurant number (A2P opt-in evidence). Understated on purpose. */
+.hero-address.has-contact { margin-bottom: var(--sg-sp-2); }
+.hero-contact {
+  font-size: var(--sg-fs-sm);
+  color: rgba(250, 251, 255, 0.85);
+  margin: 0 auto var(--sg-sp-7);
 }
