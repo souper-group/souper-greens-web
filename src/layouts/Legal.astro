@@ -1,0 +1,52 @@
+---
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+/**
+ * Article layout for the legal pages. `title` renders as BOTH the <title>
+ * and the <h1>, exactly as passed: Twilio's TCR reviewers check those
+ * strings verbatim, so no site-name suffix and no rewording.
+ */
+interface Props {
+  title: string;
+  effective: string;
+  description: string;
+}
+const { title, effective, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="canonical" href={canonical} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" aria-label="Souper Greens home">
+    <img src="/assets/logo-primary-tight.svg" alt="Souper Greens" width="412" height="150" />
+  </a>
+</header>
+
+<main class="legal">
+  <h1>{title}</h1>
+  <p class="effective">Effective {effective}</p>
+  <slot />
+</main>
+
+<Footer />
+
+</body>
+</html>

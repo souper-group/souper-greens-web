@@ -493,8 +493,9 @@ footer {
   margin: 0 auto;
   flex: none;
   /* Clears the natural height at every width, including the narrowest, where
-   * the copyright line wraps and the sign-off runs to three lines (~78px). */
-  max-height: 96px;
+   * the copyright wraps and the fine print (with legal links) runs to four
+   * lines (~96px). Re-measure before tightening. */
+  max-height: 120px;
 }
 /* Class rather than `footer img`, so it also matches when the mark is inlined
  * as an <svg> (the preview build does exactly that). The logo is 412x150, so
@@ -543,3 +544,37 @@ footer .fine span { display: block; }
 .foot-ig { display: inline-flex; }
 .foot-ig svg { width: 22px; height: 22px; display: block; }
 .foot-ig:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
+
+
+/* Fine-print legal links (Privacy · Terms) */
+footer .fine a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--sg-steel);
+  transition: text-decoration-color var(--sg-dur-fast) var(--sg-ease);
+}
+footer .fine a:hover { text-decoration-color: var(--sg-graphite); }
+footer .fine a:focus-visible { outline: 2px solid var(--sg-green); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
+
+/* ——— Legal pages (/privacy, /terms) ——— */
+.site-header { width: 100%; max-width: 1100px; margin: 0 auto; padding: var(--sg-sp-5) var(--sg-sp-6); }
+.site-header img { height: 28px; width: auto; display: block; }
+.site-header a { display: inline-block; }
+.site-header a:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 3px; border-radius: var(--sg-radius-xs); }
+
+.legal {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--sg-sp-6) var(--sg-sp-6) var(--sg-sp-9);
+}
+.legal h1 { font-size: var(--sg-fs-h2); font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--sg-sp-2); }
+.legal .effective { color: var(--sg-fg-muted); font-size: var(--sg-fs-sm); margin-bottom: var(--sg-sp-7); }
+.legal h2 { font-size: var(--sg-fs-h4); margin: var(--sg-sp-7) 0 var(--sg-sp-3); }
+.legal p { margin-bottom: var(--sg-sp-4); line-height: var(--sg-lh-loose); }
+.legal ul { margin: 0 0 var(--sg-sp-4); padding-left: 1.2em; display: grid; gap: var(--sg-sp-3); }
+.legal li { line-height: var(--sg-lh-loose); }
+.legal a { color: var(--sg-green); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.legal a:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
