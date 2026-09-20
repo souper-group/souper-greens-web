@@ -574,7 +574,27 @@ footer .fine a:focus-visible { outline: 2px solid var(--sg-green); outline-offse
 .legal .effective { color: var(--sg-fg-muted); font-size: var(--sg-fs-sm); margin-bottom: var(--sg-sp-7); }
 .legal h2 { font-size: var(--sg-fs-h4); margin: var(--sg-sp-7) 0 var(--sg-sp-3); }
 .legal p { margin-bottom: var(--sg-sp-4); line-height: var(--sg-lh-loose); }
-.legal ul { margin: 0 0 var(--sg-sp-4); padding-left: 1.2em; display: grid; gap: var(--sg-sp-3); }
+.legal ul, .legal ol { margin: 0 0 var(--sg-sp-4); padding-left: 1.2em; display: grid; gap: var(--sg-sp-3); }
 .legal li { line-height: var(--sg-lh-loose); }
 .legal a { color: var(--sg-green); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .legal a:focus-visible { outline: 3px solid var(--sg-green); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
+
+
+/* Policy links at the point of SMS-consent collection */
+.consent-links {
+  font-size: var(--sg-fs-xs);
+  color: rgba(250, 251, 255, 0.85);
+  text-align: left;
+  margin-top: var(--sg-sp-2);
+  padding-left: calc(18px + var(--sg-sp-3)); /* aligns with the consent copy */
+}
+.consent-links a {
+  color: var(--sg-paper);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(250, 251, 255, 0.45);
+  transition: text-decoration-color var(--sg-dur-fast) var(--sg-ease);
+}
+.consent-links a:hover { text-decoration-color: var(--sg-paper); }
+.consent-links a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
