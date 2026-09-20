@@ -1,0 +1,68 @@
+---
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+/**
+ * Placeholder careers page: no listings yet, but the URL is stable so the
+ * welcome email, Instagram bio, and text replies can point here now.
+ * Indexable on purpose — job seekers should find it.
+ */
+
+const title = 'Careers — Souper Greens';
+const description =
+  'Souper Greens is hiring in Arcadia before we open — kitchen, bakery, and front of house. Job listings will be posted here.';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="canonical" href={canonical} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <img class="hero-logo" src="/assets/logo-reverse-tight.svg" alt="Souper Greens" width="412" height="150" />
+    <p class="eyebrow">Careers</p>
+    <h1>Good food needs good people.</h1>
+    <p class="lead">
+      Souper Greens is opening at 301 E Huntington Dr in Arcadia — handcrafted
+      soups, a big fresh salad bar, pasta, soft serve, and bread baked in our
+      own ovens. Before the doors open, we'll be hiring across the whole
+      restaurant: kitchen and prep, bakery, and front of house.
+    </p>
+    <p class="lead">
+      Listings aren't posted yet — when they are, this is where they'll live.
+      Can't wait? Neither can we.
+    </p>
+
+    <p class="careers-actions">
+      <a class="btn primary" href="mailto:hello@soupergreens.com?subject=Working%20at%20Souper%20Greens">Email us about working here</a>
+    </p>
+    <p class="careers-note">
+      Tell us a little about yourself and the kind of work you're after —
+      a real person reads every email.
+    </p>
+
+    <p class="back-home">
+      <a href="/">Back to soupergreens.com</a>
+    </p>
+  </div>
+</header>
+
+<Footer />
+
+</body>
+</html>

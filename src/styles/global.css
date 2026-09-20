@@ -598,3 +598,13 @@ footer .fine a:focus-visible { outline: 2px solid var(--sg-green); outline-offse
 }
 .consent-links a:hover { text-decoration-color: var(--sg-paper); }
 .consent-links a:focus-visible { outline: 3px solid var(--sg-paper); outline-offset: 2px; border-radius: var(--sg-radius-xs); }
+
+
+/* ——— Careers page ——— */
+.careers-actions { margin-top: var(--sg-sp-2); }
+.careers-note {
+  font-size: var(--sg-fs-sm);
+  color: rgba(250, 251, 255, 0.85);
+  max-width: 420px;
+  margin: var(--sg-sp-4) auto 0;
+}
