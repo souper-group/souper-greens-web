@@ -174,6 +174,28 @@ Configuration:
 - Kit failures are logged (`Kit forward failed for …`) and visible under the
   Worker's observability/logs in the dashboard.
 
+## Backfilling Kit after an outage
+
+If Kit forwarding breaks (bad form name, revoked key, Kit outage), signups
+keep landing safely in KV with a `kitError` field and no `kitSyncedAt`.
+To replay them once Kit is fixed:
+
+1. Ensure the Kit form named in `wrangler.jsonc` (`KIT_FORM_NAME`) exists,
+   with double opt-in on and the domain verified.
+2. Set a `BACKFILL_TOKEN` secret on the Worker (any long random string).
+3. Run until `done` is true:
+
+```sh
+curl -s -X POST https://soupergreens.com/api/backfill-kit \
+  -H "Authorization: Bearer $BACKFILL_TOKEN" -H "Content-Type: application/json"
+```
+
+Each call processes up to 15 records, paced for Kit's rate limits, and each
+backfilled subscriber gets the normal double opt-in confirmation email.
+Records failing 3 times are parked (`kitBackfillAttempts`) and listed in the
+response for a human look. Incident that motivated this: 2026-09-28, when a
+second form appearing in Kit broke name resolution during a traffic spike.
+
 ## Rate limiting
 
 Two layers on `POST /api/subscribe`, mostly to stop a script from spraying

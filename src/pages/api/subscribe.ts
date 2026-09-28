@@ -3,11 +3,8 @@ import type { APIRoute } from 'astro';
 // runtime module now. The adapter marks `cloudflare:*` imports external, so it
 // resolves inside the Worker and never during the static prerender.
 import { env } from 'cloudflare:workers';
+import { forwardToKit, kitFormNameFrom, type KVLike } from '../../lib/kit';
 
-type KVLike = {
-  put(key: string, value: string, options?: { expirationTtl?: number }): Promise<unknown>;
-  get(key: string): Promise<string | null>;
-};
 type RateLimiterLike = { limit(options: { key: string }): Promise<{ success: boolean }> };
 
 /**
@@ -51,62 +48,6 @@ function normalizePhone(raw: string): string | null {
 
 function isTruthy(value: unknown): boolean {
   return value === true || value === 'yes' || value === 'on' || value === 'true';
-}
-
-/* ── Kit forwarding ──
- * KV is the durable record; Kit is best-effort on top. Adding a subscriber to
- * the form via the API still triggers the form's double opt-in, so people
- * confirm by email before going active. A Kit failure is logged and the record
- * simply lacks kitSyncedAt, which is the backfill marker.
- */
-const KIT_API_BASE = 'https://api.kit.com/v4';
-const KIT_FORM_NAME = 'landing page'; // matched case-insensitively
-const KIT_FORM_CACHE_KEY = 'kit:form_id';
-
-function kitFetch(path: string, apiKey: string, init?: { method?: string; body?: string }): Promise<Response> {
-  return fetch(KIT_API_BASE + path, {
-    method: init?.method ?? 'GET',
-    body: init?.body,
-    headers: { 'Content-Type': 'application/json', 'X-Kit-Api-Key': apiKey },
-    signal: AbortSignal.timeout(5000),
-  });
-}
-
-async function resolveKitFormId(apiKey: string, kv: KVLike): Promise<string> {
-  const cached = await kv.get(KIT_FORM_CACHE_KEY);
-  if (cached) return cached;
-
-  const res = await kitFetch('/forms', apiKey);
-  if (!res.ok) throw new Error(`Kit GET /forms responded ${res.status}`);
-  const data = (await res.json()) as { forms?: Array<{ id: number | string; name?: string }> };
-  const forms = data.forms ?? [];
-  const match =
-    forms.find((f) => (f.name ?? '').trim().toLowerCase() === KIT_FORM_NAME) ??
-    (forms.length === 1 ? forms[0] : undefined);
-  if (!match) throw new Error(`Kit form "${KIT_FORM_NAME}" not found among ${forms.length} forms`);
-
-  const id = String(match.id);
-  await kv.put(KIT_FORM_CACHE_KEY, id, { expirationTtl: 86400 });
-  return id;
-}
-
-async function forwardToKit(email: string, apiKey: string, kv: KVLike): Promise<void> {
-  const formId = await resolveKitFormId(apiKey, kv);
-  // Kit wants the subscriber to exist before a form add by email. The create
-  // is an upsert in practice, so an already-known address is not an error —
-  // only the form add is required to succeed.
-  const create = await kitFetch('/subscribers', apiKey, {
-    method: 'POST',
-    body: JSON.stringify({ email_address: email }),
-  });
-  if (!create.ok && create.status !== 409 && create.status !== 422) {
-    throw new Error(`Kit POST /subscribers responded ${create.status}`);
-  }
-  const add = await kitFetch(`/forms/${formId}/subscribers`, apiKey, {
-    method: 'POST',
-    body: JSON.stringify({ email_address: email }),
-  });
-  if (!add.ok) throw new Error(`Kit form add responded ${add.status}`);
 }
 
 function respond(ok: boolean, error: string | null, status: number, wantsHtml: boolean): Response {
@@ -228,7 +169,7 @@ export const POST: APIRoute = async ({ request }) => {
   const kitApiKey = typeof bindings.KIT_API_KEY === 'string' ? bindings.KIT_API_KEY : '';
   if (kitApiKey) {
     try {
-      await forwardToKit(email, kitApiKey, mailingList);
+      await forwardToKit(email, kitApiKey, mailingList, kitFormNameFrom(bindings));
       record.kitSyncedAt = new Date().toISOString();
       delete record.kitError;
     } catch (err) {

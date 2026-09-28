@@ -44,7 +44,11 @@
   // are visible in git. Secrets live in the dashboard (Settings → Variables
   // and Secrets, type Secret), which survives deploys; plain-text dashboard
   // variables would be wiped by each deploy, secrets are not.
-  "vars": {},
+  "vars": {
+    // Must match the Kit form's name (case-insensitive) that signups join.
+    // Renaming the form in Kit without updating this breaks forwarding.
+    "KIT_FORM_NAME": "Landing page"
+  },
 
   "observability": {
     "enabled": true,
