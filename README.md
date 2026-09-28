@@ -159,7 +159,8 @@ minute or two usually is not a misconfiguration.
 
 Each signup is written to KV first (the durable record), then forwarded
 best-effort to [Kit](https://kit.com): the subscriber is created and added to
-the form named **Landing page**, which triggers that form's double opt-in
+the form named by `KIT_FORM_NAME` in `wrangler.jsonc` (currently
+**Pre-opening Landing Page**), which triggers that form's double opt-in
 confirmation email. A Kit outage or error never fails the signup — the record
 just lacks a `kitSyncedAt` field, which marks it for backfill.
 
@@ -167,10 +168,11 @@ Configuration:
 
 - `KIT_API_KEY` — a **runtime secret** on the Worker (Settings → Variables and
   Secrets). Never in this repo. Without it, forwarding is silently skipped.
-- The form is found by name (case-insensitive "landing page"), or used outright
-  if the account has exactly one form. Its id is cached in KV
-  (`kit:form_id`, 24h TTL) — rename the form in Kit and the cache picks it up
-  within a day, or delete that KV key to force it.
+- The form is found by name (case-insensitive match on `KIT_FORM_NAME`), or
+  used outright if the account has exactly one form. Renaming the form in Kit
+  without updating `KIT_FORM_NAME` breaks forwarding — keep them in sync. The
+  resolved id is cached in KV (`kit:form_id:<name>`, 24h TTL); the cache key
+  includes the name, so changing `KIT_FORM_NAME` never serves a stale id.
 - Kit failures are logged (`Kit forward failed for …`) and visible under the
   Worker's observability/logs in the dashboard.
 

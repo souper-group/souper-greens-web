@@ -47,7 +47,7 @@
   "vars": {
     // Must match the Kit form's name (case-insensitive) that signups join.
     // Renaming the form in Kit without updating this breaks forwarding.
-    "KIT_FORM_NAME": "Landing page"
+    "KIT_FORM_NAME": "Pre-opening Landing Page"
   },
 
   "observability": {
